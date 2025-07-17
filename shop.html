@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trash2Cash – Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+				  <img src="https://i.ibb.co/Q3TDVKgq/image.png" alt="Logo">
+				  Trash 2 Cash
+				</a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html#vision">Our Vision</a></li>
+          <li><a href="index.html#mission">Our Mission</a></li>
+          <li><a href="index.html#how-it-works">How It Works</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="home.html" class="btn btn-small primary-btn">Home</a></li>
+          <li><a href="#" id="logoutBtn" class="btn btn-small secondary-btn">Logout</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+          <i class="fas fa-bars"></i>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="dashboard card">
+          <h2>Welcome, <span id="username">admin</span></h2>
+          <p>Your balance: <strong id="balance">0.00</strong> EGP</p>
+        </div>
+
+        <div class="items-grid grid-2">
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/6378248-200.png" alt="Stainless Steel Bottle" />
+            <h4>Stainless Steel Bottle</h4>
+            <p>150.00 EGP each</p>
+            <input type="number" id="qty-steelbottle" min="0" value="0" />
+            <button class="btn primary-btn"
+              onclick="addToBasket('Stainless Steel Bottle', 150, 'qty-steelbottle')">Add</button>
+          </div>
+
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/reusable-bag-icon-4019784-512.png"
+              alt="Reusable Cloth Bag" />
+            <h4>Reusable Cloth Bag</h4>
+            <p>80.00 EGP each</p>
+            <input type="number" id="qty-clothbag" min="0" value="0" />
+            <button class="btn primary-btn" onclick="addToBasket('Reusable Cloth Bag', 80, 'qty-clothbag')">Add</button>
+          </div>
+
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/6328040-200.png" alt="Bamboo Toothbrush" />
+            <h4>Bamboo Toothbrush</h4>
+            <p>30.00 EGP each</p>
+            <input type="number" id="qty-toothbrush" min="0" value="0" />
+            <button class="btn primary-btn"
+              onclick="addToBasket('Bamboo Toothbrush', 30, 'qty-toothbrush')">Add</button>
+          </div>
+
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/7914996-200.png" alt="Reusable Food Container" />
+            <h4>Food Container</h4>
+            <p>120.00 EGP each</p>
+            <input type="number" id="qty-foodcontainer" min="0" value="0" />
+            <button class="btn primary-btn"
+              onclick="addToBasket('Reusable Food Container', 120, 'qty-foodcontainer')">Add</button>
+          </div>
+        </div>
+
+        <div class="basket card" style="margin-top: 30px;">
+          <div class="basket-header">
+            <h3>Your Basket</h3>
+            <div>
+              <button id="clearBasketBtn" title="Clear all items">Clear Basket</button>
+              <button id="finishBtn" title="Finish Purchase">
+                Finish Purchase
+              </button>
+            </div>
+          </div>
+          <ul id="basketList">
+            <li>No items yet.</li>
+          </ul>
+          <p>Total: <strong id="totalAmount">0.00</strong> EGP</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Trash 2 Cash</h3>
+          <p>Making sustainable living accessible to all—anywhere, anytime.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html#vision">Our Vision</a></li>
+            <li><a href="index.html#mission">Our Mission</a></li>
+            <li><a href="index.html#how-it-works">How It Works</a></li>
+            <li><a href="index.html#features">Features</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="currentYear">2025</span> Trash 2 Cash. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal for checkout -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Your total is <span id="modalTotal">0.00</span> EGP</h3>
+      <p>Please enter your details for delivery:</p>
+      <form id="orderForm" class="order-form">
+        <input type="text" id="customerName" placeholder="Your Name" required />
+        <textarea id="customerAddress" placeholder="Your Address" rows="3" required></textarea>
+        <input type="tel" id="customerPhone" placeholder="Phone Number" required pattern="[0-9+ ]{7,}" />
+        <div class="modal-buttons">
+          <button type="button" class="btn-modal btn-close" id="cancelOrderBtn">Cancel</button>
+          <button type="submit" class="btn-modal btn-confirm">Confirm Purchase</button>
+        </div>
+      </form>
+      <p id="orderMessage" style="margin-top:15px; font-weight:600;"></p>
+    </div>
+  </div>
+
+  <script>
+    let basketItems = [];
+    let totalBalance = 0;
+
+    const basketList = document.getElementById("basketList");
+    const balanceEl = document.getElementById("balance");
+    const totalAmountEl = document.getElementById("totalAmount");
+    const checkoutModal = document.getElementById("checkoutModal");
+    const modalTotal = document.getElementById("modalTotal");
+    const orderForm = document.getElementById("orderForm");
+    const orderMessage = document.getElementById("orderMessage");
+
+    // Load balance from localStorage
+    function loadBalance() {
+      const savedBalance = localStorage.getItem("trash2cash_balance");
+      totalBalance = savedBalance ? parseFloat(savedBalance) : 0;
+      if (isNaN(totalBalance)) totalBalance = 0;
+      balanceEl.textContent = totalBalance.toFixed(2);
+    }
+
+    // Update balance in UI and localStorage
+    function updateBalance(newBalance) {
+      totalBalance = newBalance;
+      balanceEl.textContent = totalBalance.toFixed(2);
+      localStorage.setItem("trash2cash_balance", totalBalance.toFixed(2));
+    }
+
+    // Update basket UI and total amount
+    function updateBasketUI() {
+      basketList.innerHTML = "";
+
+      if (basketItems.length === 0) {
+        basketList.innerHTML = "<li>No items yet.</li>";
+        totalAmountEl.textContent = "0.00";
+        return;
+      }
+
+      let basketTotal = 0;
+      basketItems.forEach((item, index) => {
+        const subtotal = item.qty * item.pricePerUnit;
+        basketTotal += subtotal;
+
+        const li = document.createElement("li");
+        li.textContent = `${item.qty} × ${item.name} = ${subtotal.toFixed(2)} EGP`;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "×";
+        removeBtn.className = "remove-item-btn";
+        removeBtn.title = "Remove this item";
+        removeBtn.addEventListener("click", () => {
+          removeItemFromBasket(index);
+        });
+
+        li.appendChild(removeBtn);
+        basketList.appendChild(li);
+      });
+
+      totalAmountEl.textContent = basketTotal.toFixed(2);
+    }
+
+    function addToBasket(itemName, pricePerUnit, inputId) {
+      const qtyInput = document.getElementById(inputId);
+      const qty = parseInt(qtyInput.value);
+      if (!qty || qty <= 0) return;
+
+      const existingIndex = basketItems.findIndex((i) => i.name === itemName);
+      if (existingIndex !== -1) {
+        basketItems[existingIndex].qty += qty;
+      } else {
+        basketItems.push({name: itemName, pricePerUnit: pricePerUnit, qty: qty});
+      }
+
+      updateBasketUI();
+      qtyInput.value = 0;
+    }
+
+    function removeItemFromBasket(index) {
+      basketItems.splice(index, 1);
+      updateBasketUI();
+    }
+
+    function clearBasket() {
+      basketItems = [];
+      updateBasketUI();
+    }
+
+    // Finish purchase button
+    document.getElementById("finishBtn").addEventListener("click", () => {
+      if (basketItems.length === 0) {
+        return;
+      }
+
+      // Show modal with total price
+      let basketSum = 0;
+      basketItems.forEach(item => {
+        basketSum += item.qty * item.pricePerUnit;
+      });
+
+      modalTotal.textContent = basketSum.toFixed(2);
+      orderMessage.textContent = "";
+      orderForm.reset();
+      checkoutModal.style.display = "block";
+    });
+
+    // Cancel order button
+    document.getElementById("cancelOrderBtn").addEventListener("click", () => {
+      checkoutModal.style.display = "none";
+    });
+
+    // Handle order form submission
+    orderForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("customerName").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+
+      if (!name || !address || !phone) {
+        orderMessage.style.color = "#e74c3c";
+        orderMessage.textContent = "Please fill in all fields.";
+        return;
+      }
+
+      // Calculate total purchase amount
+      let purchaseTotal = 0;
+      basketItems.forEach(item => {
+        purchaseTotal += item.qty * item.pricePerUnit;
+      });
+
+      if (purchaseTotal > totalBalance) {
+        orderMessage.style.color = "#e74c3c";
+        orderMessage.textContent = "Insufficient balance. Please recycle more to earn.";
+        return;
+      }
+
+
+
+
+      // Deduct amount
+      const newBalance = totalBalance - purchaseTotal;
+      updateBalance(newBalance);
+
+      // Here you could add code to send order data to backend/server if needed
+
+      orderMessage.style.color = "#27ae60";
+      orderMessage.textContent = `Thank you for your purchase, ${name}! Your order will be delivered to: ${address}.`;
+
+      // Clear basket
+      clearBasket();
+
+      // Close modal after a delay
+      setTimeout(() => {
+        checkoutModal.style.display = "none";
+        orderMessage.textContent = "";
+      }, 4000);
+    });
+
+    // Load balance and basket on page load
+    window.onload = () => {
+      loadBalance();
+      updateBasketUI();
+    };
+
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = "index.html";
+    });
+
+    // Hamburger menu toggle
+    document.getElementById("hamburger").addEventListener("click", () => {
+      const navLinks = document.getElementById("navLinks");
+      navLinks.classList.toggle("open");
+    });
+
+    window.onload = () => {
+      loadBalance();
+      updateBasketUI();
+
+      // ربط حدث زرار تفريغ السلة
+      document.getElementById("clearBasketBtn").addEventListener("click", () => {
+        clearBasket();
+      });
+    };
+
+  </script>
+</body>
+
+</html>
+
+

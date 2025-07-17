@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trash2Cash – Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+
+  <header>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+				  <img src="https://i.ibb.co/Q3TDVKgq/image.png" alt="Logo">
+				  Trash 2 Cash
+				</a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html#vision">Our Vision</a></li>
+          <li><a href="index.html#mission">Our Mission</a></li>
+          <li><a href="index.html#how-it-works">How It Works</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="shop.html" class="btn btn-small primary-btn">Shop</a></li>
+          <li><a href="#" id="logoutBtn" class="btn btn-small secondary-btn">Logout</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+          <i class="fas fa-bars"></i>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen" style="display: none;">
+    <div class="leaf-spinner">
+      <i class="fas fa-leaf"></i>
+    </div>
+    <p>Loading Trash 2 Cash...</p>
+  </div>
+
+  <!-- Streak Popup -->
+  <div class="streak-popup" id="streakPopup" style="display: none;">
+    <div class="streak-popup-content">
+      <span class="streak-close" id="closeStreak">&times;</span>
+      <h2>🎉 Your Weekly Streak Started!</h2>
+      <p>You’ve earned <strong>10 EGP</strong> for Day 1 🎁</p>
+      <table class="streak-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Reward</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Day 1</td>
+            <td>10 EGP ✅</td>
+          </tr>
+          <tr>
+            <td>Day 2</td>
+            <td>12 EGP</td>
+          </tr>
+          <tr>
+            <td>Day 3</td>
+            <td>14 EGP</td>
+          </tr>
+          <tr>
+            <td>Day 4</td>
+            <td>16 EGP</td>
+          </tr>
+          <tr>
+            <td>Day 5</td>
+            <td>18 EGP</td>
+          </tr>
+          <tr>
+            <td>Day 6</td>
+            <td>20 EGP</td>
+          </tr>
+          <tr>
+            <td>Day 7</td>
+            <td>22 EGP</td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="claimRewardBtn" class="btn-primary-streak">Claim Reward</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="dashboard card">
+          <h2>Welcome, <span id="username">admin</span></h2>
+          <p>Your balance: <strong id="balance">0.00</strong> EGP</p>
+        </div>
+
+        <div class="items-grid grid-2">
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/water-bottle-icon-5174052-512.png" alt="Bottle" />
+            <h4>Plastic Bottles (1.5L)</h4>
+            <p>0.20 EGP each</p>
+            <input type="number" id="qty-bottle" min="0" value="0" />
+            <button class="btn primary-btn"
+              onclick="addToBasket('Plastic Bottles (1.5L)', 0.2, 'qty-bottle')">Add</button>
+          </div>
+
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/water-bottle-icon-5174052-512.png" alt="Bottle" />
+            <h4>Plastic Bottles (0.6L)</h4>
+            <p>0.15 EGP each</p>
+            <input type="number" id="qty-smallbottle" min="0" value="0" />
+            <button class="btn primary-btn"
+              onclick="addToBasket('Plastic Bottles (0.6L)', 0.15, 'qty-smallbottle')">Add</button>
+          </div>
+
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/plastic-containers-icon-6940612-512.png" alt="Container" />
+            <h4>Plastic Containers</h4>
+            <p>0.30 EGP each</p>
+            <input type="number" id="qty-container" min="0" value="0" />
+            <button class="btn primary-btn"
+              onclick="addToBasket('Plastic Containers', 0.3, 'qty-container')">Add</button>
+          </div>
+
+          <div class="item-card card">
+            <img src="https://static.thenounproject.com/png/dome-cap-plastic-cup-icon-2621466-512.png" alt="Caps" />
+            <h4>Plastic Caps</h4>
+            <p>0.05 EGP each</p>
+            <input type="number" id="qty-cap" min="0" value="0" />
+            <button class="btn primary-btn" onclick="addToBasket('Plastic Caps', 0.05, 'qty-cap')">Add</button>
+          </div>
+        </div>
+
+        <div class="basket card" style="margin-top: 30px;">
+          <div class="basket-header">
+            <h3>Your Basket</h3>
+            <div>
+              <button id="clearBasketBtn" title="Clear all items">Clear Basket</button>
+              <button id="finishBtn" title="Finish and Find Nearest Bin">Finish & Find Bin</button>
+            </div>
+          </div>
+          <ul id="basketList">
+            <li>No items yet.</li>
+          </ul>
+          <p>Total: <strong id="totalAmount">0.00</strong> EGP</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Trash 2 Cash</h3>
+          <p>Making sustainable living accessible to all—anywhere, anytime.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html#vision">Our Vision</a></li>
+            <li><a href="index.html#mission">Our Mission</a></li>
+            <li><a href="index.html#how-it-works">How It Works</a></li>
+            <li><a href="index.html#features">Features</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="currentYear">2025</span> Trash 2 Cash. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="finishModal" class="modal">
+    <div class="modal-content">
+      <h3>Your total is <span id="modalTotal">0.00</span> EGP</h3>
+      <p>Ready to find the nearest recycling bin?</p>
+      <div class="modal-buttons">
+        <button class="btn-modal btn-showmap" id="showMapBtn">Show Map</button>
+        <button class="btn-modal btn-close" id="closeModalBtn">Cancel</button>
+      </div>
+      <div id="mapContainer" style="display:none;">
+        <div id="map" style="height: 300px;"></div>
+      </div>
+
+      <!-- اختيار الفروع وزر الإرسال -->
+      <div id="branchSelection" style="margin-top: 15px; display: none;">
+        <label for="branchSelect">Choose a branch:</label>
+        <select id="branchSelect" style="padding: 8px; margin-left: 10px; min-width: 220px;">
+          <option value="" disabled selected>-- Select a branch --</option>
+          <option value="Branch 1" data-lat="30.0444" data-lng="31.2357">Main Branch - Downtown</option>
+          <option value="Branch 2" data-lat="30.0626" data-lng="31.2194">Maadi Branch</option>
+          <option value="Branch 3" data-lat="30.0131" data-lng="31.2089">Zamalek Branch</option>
+          <option value="Branch 4" data-lat="30.0253" data-lng="31.2497">Heliopolis Branch</option>
+        </select>
+        <button id="submitBranchBtn" class="btn-modal btn-showmap"
+          style="margin-left: 15px;margin-top: 15px;">Submit</button>
+        <div id="branchMessage"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+  <script>
+    let basketItems = [];
+    let totalBalance = 0;
+    let map;
+    let leafletMapInitialized = false;
+
+    const basketList = document.getElementById("basketList");
+    const balanceEl = document.getElementById("balance");
+    const totalAmountEl = document.getElementById("totalAmount");
+    const finishModal = document.getElementById("finishModal");
+    const modalTotal = document.getElementById("modalTotal");
+    const mapContainer = document.getElementById("mapContainer");
+
+    // تحميل الرصيد من localStorage
+    function loadBalance() {
+      const savedBalance = localStorage.getItem("trash2cash_balance");
+      totalBalance = savedBalance ? parseFloat(savedBalance) : 0;
+      if (isNaN(totalBalance)) totalBalance = 0;
+      balanceEl.textContent = totalBalance.toFixed(2);
+    }
+
+    // تحديث الرصيد وتخزينه
+    function updateBalance(newBalance) {
+      totalBalance = newBalance;
+      balanceEl.textContent = totalBalance.toFixed(2);
+      
+      localStorage.setItem("trash2cash_balance", totalBalance.toFixed(2));
+    }
+
+    // تحديث واجهة السلة
+    function updateBasketUI() {
+      basketList.innerHTML = "";
+
+      if (basketItems.length === 0) {
+        basketList.innerHTML = "<li>No items yet.</li>";
+        totalAmountEl.textContent = "0.00";
+        return;
+      }
+
+      let basketTotal = 0;
+      basketItems.forEach((item, index) => {
+        const subtotal = item.qty * item.pricePerUnit;
+        basketTotal += subtotal;
+
+        const li = document.createElement("li");
+        li.textContent = `${item.qty} × ${item.name} = ${subtotal.toFixed(2)} EGP`;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "×";
+        removeBtn.className = "remove-item-btn";
+        removeBtn.title = "Remove this item";
+        removeBtn.addEventListener("click", () => {
+          removeItemFromBasket(index);
+        });
+
+        li.appendChild(removeBtn);
+        basketList.appendChild(li);
+      });
+
+      totalAmountEl.textContent = basketTotal.toFixed(2);
+    }
+
+    // إضافة صنف للسلة
+    function addToBasket(itemName, pricePerUnit, inputId) {
+      const qtyInput = document.getElementById(inputId);
+      const qty = parseInt(qtyInput.value);
+      if (!qty || qty <= 0) return;
+
+      const existingIndex = basketItems.findIndex((i) => i.name === itemName);
+      if (existingIndex !== -1) {
+        basketItems[existingIndex].qty += qty;
+      } else {
+        basketItems.push({name: itemName, pricePerUnit: pricePerUnit, qty: qty});
+      }
+
+      updateBasketUI();
+      qtyInput.value = 0;
+    }
+
+    // إزالة صنف من السلة
+    function removeItemFromBasket(index) {
+      basketItems.splice(index, 1);
+      updateBasketUI();
+    }
+
+    // تفريغ السلة
+    function clearBasket() {
+      basketItems = [];
+      updateBasketUI();
+    }
+
+    // فتح مودال إتمام الطلب
+   document.getElementById("finishBtn").addEventListener("click", () => {
+	  if (basketItems.length === 0) {
+		return;
+	  }
+
+	  // ✅ إضافة الحساب هنا:
+	  let basketSum = 0;
+	  basketItems.forEach(item => {
+		basketSum += item.qty * item.pricePerUnit;
+	  });
+	  modalTotal.textContent = basketSum.toFixed(2);
+
+	  mapContainer.style.display = "none";
+	  document.getElementById("branchSelection").style.display = "none";
+	  finishModal.style.display = "block";
+	  leafletMapInitialized = false;
+	});
+
+
+    // إغلاق المودال
+    document.getElementById("closeModalBtn").addEventListener("click", () => {
+      finishModal.style.display = "none";
+    });
+
+    // عرض الخريطة
+    document.getElementById("showMapBtn").addEventListener("click", () => {
+      mapContainer.style.display = "block";
+      document.getElementById("branchSelection").style.display = "block";
+
+      if (!leafletMapInitialized) {
+        initMap();
+        leafletMapInitialized = true;
+      }
+    });
+
+    // تهيئة خريطة ليفلت وتحديد الفروع
+    function initMap() {
+      if (!map) {
+        map = L.map("map").setView([30.0444, 31.2357], 12);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors",
+          maxZoom: 19,
+        }).addTo(map);
+
+        addBranchMarker(30.0444, 31.2357, "الفرع الرئيسي - وسط البلد");
+        addBranchMarker(30.0626, 31.2194, "فرع المعادي");
+        addBranchMarker(30.0131, 31.2089, "فرع الزمالك");
+        addBranchMarker(30.0253, 31.2497, "فرع مصر الجديدة");
+      } else {
+        map.invalidateSize();
+      }
+    }
+
+    // إضافة علامة فرع على الخريطة
+    function addBranchMarker(lat, lng, label) {
+      L.marker([lat, lng]).addTo(map).bindPopup(label);
+    }
+
+    // إرسال اختيار الفرع وإضافة الرصيد
+    document.getElementById("submitBranchBtn").addEventListener("click", () => {
+      const select = document.getElementById("branchSelect");
+      const selectedOption = select.options[select.selectedIndex];
+      const branchMessage = document.getElementById("branchMessage");
+
+      if (!selectedOption || !selectedOption.value) {
+        branchMessage.style.color = "#e74c3c";
+        branchMessage.textContent = "يرجى اختيار فرع قبل الإرسال.";
+        branchMessage.style.display = "block";
+        setTimeout(() => {
+          branchMessage.style.display = "none";
+        }, 3000);
+        return;
+      }
+
+      let basketSum = 0;
+      basketItems.forEach(item => {
+        basketSum += item.qty * item.pricePerUnit;
+      });
+	  modalTotal.textContent = basketSum.toFixed(2);
+
+
+      if (basketSum === 0) {
+        branchMessage.style.color = "#e74c3c";
+        branchMessage.textContent = "السلة فارغة، لا يمكن الإرسال.";
+        branchMessage.style.display = "block";
+        setTimeout(() => {
+          branchMessage.style.display = "none";
+        }, 3000);
+        return;
+      }
+
+      const newBalance = totalBalance + basketSum;
+      updateBalance(newBalance);
+
+      branchMessage.style.color = "#27ae60";
+      branchMessage.textContent = `A balance of ${basketSum.toFixed(2)} EGP has been added.`;
+      branchMessage.style.display = "block";
+
+      setTimeout(() => {
+        branchMessage.style.display = "none";
+        finishModal.style.display = "none";
+
+        select.selectedIndex = 0;
+        mapContainer.style.display = "none";
+        document.getElementById("branchSelection").style.display = "none";
+
+        clearBasket();
+      }, 3000);
+    });
+
+    // عرض شاشة التحميل أولاً ثم الستريك بعد ذلك
+    document.addEventListener("DOMContentLoaded", async () => {
+      const loadingScreen = document.getElementById("loadingScreen");
+      const streakPopup = document.getElementById("streakPopup");
+      const balanceEl = document.getElementById("balance");
+
+      const loadingShown = localStorage.getItem("loadingShown");
+
+      if (!loadingShown) {
+        loadingScreen.style.display = "flex";
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        loadingScreen.style.display = "none";
+
+        localStorage.setItem("loadingShown", "true");
+
+        const streakStarted = localStorage.getItem("streakStarted");
+        if (!streakStarted) {
+          streakPopup.style.display = "flex";
+
+          let currentBalance = parseFloat(localStorage.getItem("trash2cash_balance")) || 0;
+          localStorage.setItem("trash2cash_balance", currentBalance.toFixed(2));
+          localStorage.setItem("streakStarted", "true");
+
+          if (balanceEl) {
+            balanceEl.textContent = currentBalance.toFixed(2);
+          }
+        }
+      } else {
+        loadingScreen.style.display = "none";
+
+        const streakStarted = localStorage.getItem("streakStarted");
+        if (!streakStarted) {
+          streakPopup.style.display = "flex";
+
+          let currentBalance = parseFloat(localStorage.getItem("trash2cash_balance")) || 0;
+          currentBalance += 10;
+          localStorage.setItem("trash2cash_balance", currentBalance.toFixed(2));
+          localStorage.setItem("streakStarted", "true");
+
+          if (balanceEl) {
+            balanceEl.textContent = currentBalance.toFixed(2);
+          }
+        }
+      }
+    });
+
+    document.getElementById("claimRewardBtn").addEventListener("click", () => {
+      const msgContainerId = "claimRewardMessage";
+      let msgContainer = document.getElementById(msgContainerId);
+
+      // لو رسالة مش موجودة، نعمل عنصر رسالة جديد
+      if (!msgContainer) {
+        msgContainer = document.createElement("p");
+        msgContainer.id = msgContainerId;
+        msgContainer.style.color = "#27ae60";
+        msgContainer.style.marginTop = "10px";
+        document.querySelector(".streak-popup-content").appendChild(msgContainer);
+      }
+
+      if (!localStorage.getItem("streakClaimed")) {
+        let currentBalance = parseFloat(localStorage.getItem("trash2cash_balance")) || 0;
+        currentBalance += 10;
+        localStorage.setItem("trash2cash_balance", currentBalance.toFixed(2));
+        document.getElementById("balance").textContent = currentBalance.toFixed(2);
+
+        localStorage.setItem("streakClaimed", "true");
+
+        // عرض رسالة نجاح
+        msgContainer.textContent = "Reward claimed! +10 EGP added to your balance.";
+
+        // اغلاق popup بعد 2.5 ثانية
+        setTimeout(() => {
+          document.getElementById("streakPopup").style.display = "none";
+          msgContainer.textContent = "";
+        }, 2500);
+
+      } else {
+        msgContainer.style.color = "#e74c3c";
+        msgContainer.textContent = "You have already claimed your reward.";
+        setTimeout(() => {
+          msgContainer.textContent = "";
+          msgContainer.style.color = "#27ae60";
+        }, 2500);
+      }
+    });
+
+
+
+    // زر إغلاق الستريك
+    document.getElementById("closeStreak").addEventListener("click", () => {
+      document.getElementById("streakPopup").style.display = "none";
+    });
+
+    // تحميل الرصيد والسلة عند فتح الصفحة
+    window.onload = () => {
+      loadBalance();
+      updateBasketUI();
+    };
+
+    // زر تسجيل الخروج
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = "index.html";
+    });
+
+    // زر فتح القائمة في الموبايل (الهامبرجر)
+    document.getElementById("hamburger").addEventListener("click", () => {
+      const navLinks = document.getElementById("navLinks");
+      navLinks.classList.toggle("open");
+    });
+
+
+    window.onload = () => {
+      loadBalance();
+      updateBasketUI();
+
+      // ربط حدث زرار تفريغ السلة
+      document.getElementById("clearBasketBtn").addEventListener("click", () => {
+        clearBasket();
+      });
+    };
+
+
+  </script>
+
+</body>
+
+</html>
